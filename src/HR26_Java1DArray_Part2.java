@@ -1,6 +1,7 @@
+import java.util.HashSet;
 import java.util.Scanner;
 
-public class HR26_Java1DArray_Part2_not_completed {
+public class HR26_Java1DArray_Part2 {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         int q = scan.nextInt();
@@ -18,15 +19,22 @@ public class HR26_Java1DArray_Part2_not_completed {
     }
 
     private static boolean canWin(int leap, int[] game) {
-        for (int i = 0; i < game.length; i++) {
-            if (game[i] == 0 && i + leap >= game.length) return true;
-            if (game[i] == 1) return false;
-            if (i + leap >= game.length) continue;
-            if (game[i] == 0 && game[i + leap] == 0) i = i + leap - 1;
-            else if (i != 0 && game[i - 1] == 0 && game[(i - 1) + leap] == 0) i = (i - 1) + leap - 1;
-            else if (i > 1 && game[i - 2] == 0 && game[(i - 2) + leap] == 0) i = (i - 2) + leap - 1;
+        HashSet<Integer> visited = new HashSet<>();
+        return canWinHelper(leap, game, 0, visited);
+    }
+
+    private static boolean canWinHelper(int leap, int[] game, int currentIndex, HashSet<Integer> visited) {
+        if (currentIndex >= game.length) {
+            return true;
         }
-        return false;
+        if (currentIndex < 0 || game[currentIndex] == 1 || visited.contains(currentIndex)) {
+            return false;
+        }
+        visited.add(currentIndex);
+
+        return canWinHelper(leap, game, currentIndex + leap, visited) ||
+                canWinHelper(leap, game, currentIndex + 1, visited) ||
+                canWinHelper(leap, game, currentIndex - 1, visited);
     }
 }
 
@@ -100,5 +108,18 @@ Input (stdin)
 9 4
 0 1 1 0 0 1 1 0 1
 Expected Output
+YES
+
+Input (stdin)
+3
+6 2
+0 1 0 1 0 1
+10 6
+0 0 1 1 0 0 1 1 0 0
+10 3
+0 0 1 1 0 0 1 1 0 0
+Expected Output
+YES
+NO
 YES
  */
